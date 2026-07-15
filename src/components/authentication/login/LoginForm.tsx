@@ -1,6 +1,8 @@
 "use client";
 
+import { authClient } from "@/lib/auth-client";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { type ChangeEvent, type FormEvent, useState } from "react";
 
 type FormState = {
@@ -10,12 +12,14 @@ type FormState = {
 };
 
 export default function LoginForm() {
+    const router = useRouter();
     const [formData, setFormData] = useState<FormState>({
         email: "",
         password: "",
         rememberMe: false,
     });
     const [statusMessage, setStatusMessage] = useState("Sign in to continue shopping.");
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
         const { name, value, type, checked } = event.target;
@@ -26,9 +30,30 @@ export default function LoginForm() {
         }));
     };
 
-    const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        setStatusMessage(`Welcome back, ${formData.email || "friend"}!`);
+        setIsSubmitting(true);
+        setStatusMessage("Signing you in...");
+
+        const { data, error } = await authClient.signIn.email({
+            email: formData.email,
+            password: formData.password,
+        });
+
+        if (error) {
+            setStatusMessage("Sign in failed. Please check your email and password.");
+            setIsSubmitting(false);
+            return;
+        }
+
+        if (data?.user) {
+            setStatusMessage(`Welcome back, ${data.user.name || formData.email}!`);
+            router.push("/");
+            router.refresh();
+            window.location.href = "/";
+        }
+
+        setIsSubmitting(false);
     };
 
     return (
@@ -36,7 +61,7 @@ export default function LoginForm() {
             <div className="mx-auto flex max-w-6xl flex-col overflow-hidden rounded-[2rem] border border-white/15 bg-slate-950/35 p-3 shadow-[0_25px_80px_rgba(2,6,23,0.45)] backdrop-blur-xl lg:flex-row lg:p-6">
                 <div className="flex flex-1 flex-col justify-between rounded-[1.5rem] border border-white/10 bg-white/10 p-8 text-white lg:p-10">
                     <div>
-                        <p className="inline-flex rounded-full border border-amber-400/40 bg-amber-400/10 px-3 py-1 text-sm font-medium text-amber-300">
+                        <p className="inline-flex rounded-full border border-cyan-400/40 bg-cyan-400/10 px-3 py-1 text-sm font-medium text-cyan-300">
                             Dropsmine access
                         </p>
                         <h1 className="mt-6 text-4xl font-semibold tracking-tight sm:text-5xl">
@@ -114,14 +139,19 @@ export default function LoginForm() {
 
                         <button
                             type="submit"
-                            className="w-full rounded-full bg-gradient-to-r from-amber-400 to-orange-400 px-4 py-3 text-sm font-semibold text-slate-950 transition hover:scale-[1.01]"
+                            disabled={isSubmitting}
+                            className="w-full rounded-full bg-gradient-to-r from-cyan-400 to-blue-500 px-5 py-3 text-sm font-semibold text-slate-950 transition hover:scale-[1.01] hover:shadow-lg hover:shadow-cyan-500/30 disabled:cursor-not-allowed disabled:opacity-70"
                         >
-                            Sign in
+                            {isSubmitting ? "Signing in..." : "Sign in"}
                         </button>
                     </form>
 
                     <p className="mt-6 text-center text-sm text-slate-400">
-                        New here? <span className="text-amber-300">Create an account</span>
+                        New here? <span className="text-cyan-300">
+                            <Link href="/signup">
+                                Create an account
+                            </Link>
+                        </span>
                     </p>
                 </div>
             </div>

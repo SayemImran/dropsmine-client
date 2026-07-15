@@ -1,0 +1,27 @@
+import { mongodbAdapter } from "@better-auth/mongo-adapter";
+import { betterAuth } from "better-auth";
+import { phoneNumber } from "better-auth/plugins";
+import { MongoClient } from "mongodb";
+
+
+const client = new MongoClient(process.env.MONGODB_URI!);
+const db = client.db("dropsmine_db");
+export const auth = betterAuth({
+    database: mongodbAdapter(db, { client }),
+    emailAndPassword: {
+        enabled: true,
+    },
+    user:{
+        additionalFields:{
+            phoneNumber:{
+                type:"string",
+                required:false,
+            },
+            role:{
+                type:"string",
+                defaultValue:"customer",
+                required:false,
+            }
+        }
+    }
+})
