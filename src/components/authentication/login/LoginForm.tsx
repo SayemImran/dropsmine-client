@@ -4,6 +4,7 @@ import { authClient } from "@/lib/auth-client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { type ChangeEvent, type FormEvent, useState } from "react";
+import { toast } from "sonner";
 
 type FormState = {
     email: string;
@@ -41,6 +42,7 @@ export default function LoginForm() {
         });
 
         if (error) {
+            toast.error("Failed to login. something error");
             setStatusMessage("Sign in failed. Please check your email and password.");
             setIsSubmitting(false);
             return;
@@ -48,6 +50,7 @@ export default function LoginForm() {
 
         if (data?.user) {
             setStatusMessage(`Welcome back, ${data.user.name || formData.email}!`);
+            toast.success("Login successful")
             router.push("/");
             router.refresh();
             window.location.href = "/";
