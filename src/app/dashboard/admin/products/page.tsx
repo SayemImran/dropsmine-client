@@ -30,13 +30,23 @@ async function getAuthHeaders(): Promise<HeadersInit> {
     const { data, error } = await authClient.token();
 
     if (error || !data?.token) {
-        throw new Error("Not authenticated. Please log in again.");
+        throw new Error("You need to be logged in as an admin to do that.");
     }
 
     return {
         "Content-Type": "application/json",
         Authorization: `Bearer ${data.token}`,
     };
+}
+
+async function extractErrorMessage(res: Response, fallback: string): Promise<string> {
+    try {
+        const body = await res.json();
+        if (body?.error) return body.error;
+    } catch {
+        // response wasn't JSON, fall through to fallback
+    }
+    return fallback;
 }
 
 export default function AdminProductsPage() {
@@ -52,7 +62,7 @@ export default function AdminProductsPage() {
         setError(null);
         try {
             const res = await fetch(API_URL);
-            if (!res.ok) throw new Error("Failed to fetch products.");
+            if (!res.ok) throw new Error(await extractErrorMessage(res, "Couldn't load products. Please try again."));
             const data: Product[] = await res.json();
             setProducts(data);
         } catch (err) {
@@ -85,7 +95,7 @@ export default function AdminProductsPage() {
                     headers,
                     body: JSON.stringify(formData),
                 });
-                if (!res.ok) throw new Error("Failed to update product.");
+                if (!res.ok) throw new Error(await extractErrorMessage(res, "Couldn't update this product. Please try again."));
                 const updated: Product = await res.json();
                 setProducts((prev) => prev.map((product) => (product.id === editingId ? updated : product)));
                 setEditingId(null);
@@ -95,7 +105,7 @@ export default function AdminProductsPage() {
                     headers,
                     body: JSON.stringify(formData),
                 });
-                if (!res.ok) throw new Error("Failed to create product.");
+                if (!res.ok) throw new Error(await extractErrorMessage(res, "Couldn't create this product. Please try again."));
                 const created: Product = await res.json();
                 setProducts((prev) => [created, ...prev]);
             }
@@ -126,7 +136,9 @@ export default function AdminProductsPage() {
         try {
             const headers = await getAuthHeaders();
             const res = await fetch(`${API_URL}/${id}`, { method: "DELETE", headers });
-            if (!res.ok && res.status !== 204) throw new Error("Failed to delete product.");
+            if (!res.ok && res.status !== 204) {
+                throw new Error(await extractErrorMessage(res, "Couldn't delete this product. Please try again."));
+            }
             setProducts((prev) => prev.filter((product) => product.id !== id));
             if (editingId === id) {
                 setEditingId(null);
