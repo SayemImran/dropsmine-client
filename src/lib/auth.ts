@@ -1,6 +1,6 @@
 import { mongodbAdapter } from "@better-auth/mongo-adapter";
 import { betterAuth } from "better-auth";
-import { phoneNumber } from "better-auth/plugins";
+import { jwt, phoneNumber } from "better-auth/plugins";
 import { MongoClient } from "mongodb";
 
 
@@ -23,5 +23,6 @@ export const auth = betterAuth({
                 required:false,
             }
         }
-    }
+    },
+    plugins:[jwt(), phoneNumber()]
 })

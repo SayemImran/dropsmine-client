@@ -2,42 +2,30 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
 import { authClient } from "@/lib/auth-client";
 import NavLink from "./NavLink";
 
-
 export default function Navbar() {
     const router = useRouter();
-    const [session, setSession] = useState<any>(null);
-    const [loading, setLoading] = useState(true);
+    const { data: session, isPending } = authClient.useSession();
 
     const navLinks = [
         { name: "Home", href: "/" },
         { name: "Products", href: "/products" },
         { name: "About", href: "/about" },
+        { name: "Contact", href: "/contact" },
+        {name:"Blog",href:"/blog"}
     ];
-
-    useEffect(() => {
-        const fetchSession = async () => {
-            const { data } = await authClient.getSession();
-            setSession(data?.session ?? null);
-            setLoading(false);
-        };
-
-        fetchSession();
-    }, []);
 
     const handleLogout = async () => {
         await authClient.signOut();
-        setSession(null);
         router.push("/");
-        window.location.href = "/";
+        router.refresh();
     };
 
     return (
-        <nav className="sticky top-0 z-50 mx-auto flex w-full items-center justify-between bg-gradient-to-tr from-violet-500 via-magenta-500 to-orange-400 p-3 text-white">
-            <div className="mx-auto flex w-full max-w-7xl items-center justify-between rounded-full border border-white/20 bg-white/12 px-3 py-2 shadow-2xl backdrop-blur-lg">
+        <nav className="sticky top-0 z-50 mx-auto flex w-full items-center justify-between bg-gradient-to-br from-violet-950 via-slate-900 to-slate-800 p-3 text-white">
+            <div className="mx-auto flex w-full max-w-7xl items-center justify-between rounded-full border border-white/20 bg-white/10 px-3 py-2 shadow-[0_8px_40px_rgba(2,6,23,0.35)] backdrop-blur-xl">
                 <div className="flex items-center gap-3">
                     <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-cyan-400 to-blue-600 text-lg font-semibold shadow-lg">
                         D
@@ -54,7 +42,7 @@ export default function Navbar() {
                 </ul>
 
                 <div className="flex items-center gap-2">
-                    {loading ? null : session ? (
+                    {isPending ? null : session ? (
                         <>
                             <Link href="/dashboard/customer" className="flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-2 text-sm font-medium text-white transition hover:bg-white/20">
                                 <div className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-full bg-slate-900/70">

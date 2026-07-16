@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 const collections = [
   {
     title: "Neon City",
@@ -32,9 +34,9 @@ export default function FeaturedCollectionSection() {
               Fresh graphics, premium fabric, and standout color stories built for everyday wear.
             </p>
           </div>
-          <a href="#" className="text-sm font-semibold text-amber-300 transition hover:text-amber-200">
+          <Link href="/products" className="text-sm font-semibold text-amber-300 transition hover:text-amber-200">
             Browse all styles →
-          </a>
+          </Link>
         </div>
 
         <div className="grid gap-6 md:grid-cols-3">

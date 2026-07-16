@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { authClient } from "@/lib/auth-client"; // adjust to your actual Better Auth client import path
 
 type Product = {
     id: string;
@@ -24,6 +25,19 @@ const emptyForm = {
 };
 
 const API_URL = `${process.env.NEXT_PUBLIC_APP_URL}/products`;
+
+async function getAuthHeaders(): Promise<HeadersInit> {
+    const { data, error } = await authClient.token();
+
+    if (error || !data?.token) {
+        throw new Error("Not authenticated. Please log in again.");
+    }
+
+    return {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${data.token}`,
+    };
+}
 
 export default function AdminProductsPage() {
     const [products, setProducts] = useState<Product[]>([]);
@@ -63,10 +77,12 @@ export default function AdminProductsPage() {
         setError(null);
 
         try {
+            const headers = await getAuthHeaders();
+
             if (editingId) {
                 const res = await fetch(`${API_URL}/${editingId}`, {
                     method: "PUT",
-                    headers: { "Content-Type": "application/json" },
+                    headers,
                     body: JSON.stringify(formData),
                 });
                 if (!res.ok) throw new Error("Failed to update product.");
@@ -76,7 +92,7 @@ export default function AdminProductsPage() {
             } else {
                 const res = await fetch(API_URL, {
                     method: "POST",
-                    headers: { "Content-Type": "application/json" },
+                    headers,
                     body: JSON.stringify(formData),
                 });
                 if (!res.ok) throw new Error("Failed to create product.");
@@ -108,7 +124,8 @@ export default function AdminProductsPage() {
     const handleDelete = async (id: string) => {
         setError(null);
         try {
-            const res = await fetch(`${API_URL}/${id}`, { method: "DELETE" });
+            const headers = await getAuthHeaders();
+            const res = await fetch(`${API_URL}/${id}`, { method: "DELETE", headers });
             if (!res.ok && res.status !== 204) throw new Error("Failed to delete product.");
             setProducts((prev) => prev.filter((product) => product.id !== id));
             if (editingId === id) {

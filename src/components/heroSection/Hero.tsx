@@ -17,7 +17,7 @@ export default function Hero() {
   }, []);
 
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-violet-500 via-blue-800 to-purple-300 text-white">
+    <section className="relative overflow-hidden bg-gradient-to-br from-violet-950 via-slate-900 to-slate-800 text-white">
       <div className="mx-auto flex max-w-7xl flex-col items-center gap-12 px-6 py-20 lg:flex-row lg:px-8 lg:py-28">
         <div className="max-w-2xl flex-1">
           <span className="inline-flex rounded-full border border-amber-400/40 bg-amber-400/10 px-4 py-2 text-sm font-medium text-amber-300">

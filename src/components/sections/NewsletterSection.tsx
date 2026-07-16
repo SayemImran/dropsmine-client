@@ -2,7 +2,7 @@ export default function NewsletterSection() {
   return (
     <section className="bg-slate-950 py-20 text-white">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
-        <div className="rounded-[2rem] border border-amber-400/20 bg-gradient-to-r from-violet-600/80 via-blue-700/80 to-amber-500/70 p-8 shadow-2xl shadow-black/20 sm:p-12">
+        <div className="rounded-[2rem] border border-amber-400/20 bg-gradient-to-br from-violet-950 via-slate-900 to-slate-800 p-8 shadow-2xl shadow-black/20 sm:p-12">
           <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
             <div className="max-w-2xl">
               <p className="text-sm font-semibold uppercase tracking-[0.3em] text-amber-100">
