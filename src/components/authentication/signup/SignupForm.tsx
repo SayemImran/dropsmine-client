@@ -4,6 +4,7 @@ import { authClient } from "@/lib/auth-client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { type ChangeEvent, type FormEvent, useState } from "react";
+import { toast } from "sonner";
 
 type FormState = {
     firstName: string;
@@ -89,16 +90,15 @@ export default function SignupForm() {
                 phoneNumber: formData.phoneNumber,
                 password: formData.password,
                 role:"customer",
-                autoSignIn: false,
             });
             if(!error){
-                alert("registration success");
+                toast.success("Registration successful! Please log in.");
                 router.push("/login");
                 router.refresh();
                 
             }
              else {
-                console.error("There is an error in sign up", error);
+                toast.error(error.message || "Something went wrong during signup.");
                 setStatusMessage("Sign up failed. Please try again.");
                 return;
             }
