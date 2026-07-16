@@ -1,4 +1,8 @@
+"use client";
+
 import Link from "next/link";
+import { toast } from "sonner";
+import { authClient } from "@/lib/auth-client";
 
 type Product = {
   date: string;
@@ -16,6 +20,18 @@ type ProductDetailsProps = {
 };
 
 export default function ProductDetails({ product }: ProductDetailsProps) {
+  const { data: session } = authClient.useSession();
+
+  const handleAddToCart = () => {
+    if (!session) {
+      toast.error("Please log in to add items to your cart.");
+      return;
+    }
+
+    // TODO: replace with real add-to-cart API call
+    toast.success(`${product.title} added to cart.`);
+  };
+
   return (
     <main className="min-h-screen bg-gradient-to-br from-violet-950 via-slate-900 to-slate-800 px-4 py-10 sm:px-6 lg:px-8">
       <div className="mx-auto flex max-w-7xl flex-col gap-8 rounded-[32px] border border-white/20 bg-white/20 p-6 shadow-[0_30px_80px_rgba(15,23,42,0.12)] backdrop-blur-xl lg:flex-row lg:p-10">
@@ -52,7 +68,10 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
           </div>
 
           <div className="mt-8 flex flex-wrap gap-3">
-            <button className="rounded-full bg-slate-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-slate-800">
+            <button
+              onClick={handleAddToCart}
+              className="rounded-full bg-slate-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-slate-800"
+            >
               Add to cart
             </button>
             <Link href="/products" className="rounded-full border border-slate-300 bg-white px-5 py-3 text-sm font-semibold text-slate-700 transition hover:border-slate-400 hover:bg-slate-100">
