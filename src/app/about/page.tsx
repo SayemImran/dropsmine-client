@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function AboutPage() {
   return (
-    <main className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.9),_rgba(248,250,252,1)_45%,_rgba(226,232,240,1))] px-6 py-20 text-slate-800 lg:px-8">
+    <main className="min-h-screen  bg-[radial-gradient(circle_at_top_left,_rgba(192,132,252,0.18),_transparent_30%),radial-gradient(circle_at_bottom_right,_rgba(14,165,233,0.18),_transparent_20%),linear-gradient(180deg,_#020617_0%,_#090b18_100%)] px-6 py-20 text-slate-800 lg:px-8">
       <div className="mx-auto max-w-5xl rounded-[32px] border border-slate-200 bg-white/70 p-8 shadow-[0_25px_80px_rgba(15,23,42,0.12)] backdrop-blur-xl sm:p-12">
         <p className="text-sm font-semibold uppercase tracking-[0.35em] text-slate-500">
           About us

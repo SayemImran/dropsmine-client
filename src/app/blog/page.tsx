@@ -13,11 +13,11 @@ const posts = [
 
 export default function BlogPage() {
   return (
-    <main className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.9),_rgba(248,250,252,1)_45%,_rgba(226,232,240,1))] px-6 py-20 text-slate-800 lg:px-8">
+    <main className="min-h-screen  bg-[radial-gradient(circle_at_top_left,_rgba(192,132,252,0.18),_transparent_30%),radial-gradient(circle_at_bottom_right,_rgba(14,165,233,0.18),_transparent_20%),linear-gradient(180deg,_#020617_0%,_#090b18_100%)] px-6 py-20 text-slate-800 lg:px-8">
       <div className="mx-auto max-w-6xl">
         <div className="mb-10 max-w-3xl">
-          <p className="text-sm font-semibold uppercase tracking-[0.35em] text-slate-500">Blog</p>
-          <h1 className="mt-4 text-4xl font-semibold sm:text-5xl">Stories, style notes, and product insights.</h1>
+          <p className="text-sm font-semibold uppercase tracking-[0.35em] text-blue-300">Blog</p>
+          <h1 className="mt-4 text-4xl text-white font-semibold sm:text-5xl">Stories, style notes, and product insights.</h1>
         </div>
 
         <div className="grid gap-6 md:grid-cols-2">
